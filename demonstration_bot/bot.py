@@ -224,7 +224,7 @@ async def info(interaction: discord.Interaction, member: discord.Member):
 )
 async def code(interaction: discord.Interaction):
     await interaction.response.send_message(
-        "https://github.com/MatsFangohr/discord-bots-course/tree/main/beispiel-bot"
+        "https://github.com/MatsFangohr/discord-bots-course/tree/main/demonstration_bot"
     )
 
 
