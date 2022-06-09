@@ -54,7 +54,7 @@ async def on_member_join(member: discord.Member):
 
 
 def add_commands():
-    for command in [ping, Abstimmung(), farbe, sarkasmus, stundenplan, info, code, projekte, echo, überraschung]:
+    for command in [ping, Abstimmung(), farbe, sarkasmus, stundenplan, info, code, projekte, echo]:
         tree.add_command(command, guild=guild_object)
 
 
