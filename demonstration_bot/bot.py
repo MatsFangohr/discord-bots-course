@@ -1,5 +1,4 @@
 # image manipulation?
-# run on replit?
 import os
 import enum
 import random
@@ -14,7 +13,6 @@ client = discord.Client(intents=intents)
 tree = discord.app_commands.CommandTree(client)
 
 guild_id = 956666111989010533
-guild_ids = [guild_id]
 guild_object = discord.Object(id=guild_id)
 
 
@@ -54,7 +52,17 @@ async def on_member_join(member: discord.Member):
 
 
 def add_commands():
-    for command in [ping, Abstimmung(), farbe, sarkasmus, stundenplan, info, code, projekte, echo]:
+    for command in [
+        Abstimmung(),
+        ping,
+        farbe,
+        sarkasmus,
+        stundenplan,
+        info,
+        code,
+        projekte,
+        echo,
+    ]:
         tree.add_command(command, guild=guild_object)
 
 
@@ -128,17 +136,6 @@ class Farbe(enum.Enum):
 )
 @discord.app_commands.describe(farbe="Deine gewünschte Farbe.")
 async def farbe(interaction: discord.Interaction, farbe: Farbe):
-    color_roles = [
-        964163492317917255,
-        964164753515753522,
-        964164766895575041,
-        964164788731146261,
-        964164805659349033,
-        964164826370826261,
-        964164840077791323,
-        964164867680505856,
-        964164880305385503,
-    ]
     farbe_int = int(farbe.value)
     guild = discord.utils.get(client.guilds, name="Projektwoche: Discord Bots")
     member = guild.get_member(interaction.user.id)
@@ -151,7 +148,7 @@ async def farbe(interaction: discord.Interaction, farbe: Farbe):
             return
     if farbe_int != 0:
         await member.add_roles(discord.utils.get(guild.roles, id=farbe_int))
-    for role in color_roles:
+    for role in [int(role_str.value) for role_str in Farbe]:
         if role in [r.id for r in member.roles] and role != farbe_int:
             await member.remove_roles(guild.get_role(role))
     if farbe_int != 0:
@@ -246,10 +243,7 @@ async def echo(
     interaction: discord.Interaction, channel: discord.TextChannel, message: str
 ):
     await channel.send(message)
-    await interaction.response.send_message(
-        "Fertig!",
-        ephemeral=True
-    )
+    await interaction.response.send_message("Fertig!", ephemeral=True)
 
 
 client.run(os.getenv("TOKEN"))
