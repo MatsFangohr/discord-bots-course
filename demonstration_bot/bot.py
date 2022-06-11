@@ -62,6 +62,7 @@ def add_commands():
         code,
         projekte,
         echo,
+        würfel,
     ]:
         tree.add_command(command, guild=guild_object)
 
@@ -244,6 +245,22 @@ async def echo(
 ):
     await channel.send(message)
     await interaction.response.send_message("Fertig!", ephemeral=True)
+
+
+@discord.app_commands.command(
+    name="würfel", description="Wirft eine Anzahl n-seitiger Würfel."
+)
+@discord.app_commands.describe(anzahl="Die Anzahl der Würfel.")
+@discord.app_commands.describe(seiten="Wie viele Seiten jeder Würfel hat.")
+async def würfel(
+    interaction: discord.Interaction,
+    anzahl: discord.app_commands.Range[int, 1, 300],
+    seiten: discord.app_commands.Range[int, 1, 1000],
+):
+    results = [random.randint(1, seiten) for _ in range(anzahl)]
+    await interaction.response.send_message(
+        " + ".join([str(r) for r in results]) + " = " + str(sum(results))
+    )
 
 
 client.run(os.getenv("TOKEN"))
