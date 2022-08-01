@@ -19,3 +19,4 @@
 - ich hoffe es wird interessant für alle
 - jetzt sofort fragen an mich?
 - wir legen los
+- einschätzung
