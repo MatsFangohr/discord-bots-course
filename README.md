@@ -2,6 +2,13 @@
 
 [![Code style: black](https://img.shields.io/badge/code%20style-black-000000.svg)](https://github.com/psf/black) [![Binder](https://mybinder.org/badge_logo.svg)](https://mybinder.org/v2/gh/MatsFangohr/discord-bots-course/HEAD)
 
+## Ablauf / Progression:
+- [Python-Einführung](./kurs/python_einführung.ipynb)
+  - [Aufgaben](./kurs/aufgaben)
+  - [Python-Einführung-Erweiterungen](./kurs/erweiterungen)
+- [Discord Developer Setup](./kurs/discordsetup.md)
+- [`discord.py`-Einführung](./kurs/discordpy_einführung.ipynb)
+
 ### English
 
 This course was not made to be used stand-alone, even if much of the information is available in the notebooks. It's here anyway in case anyone wants to take a look.
