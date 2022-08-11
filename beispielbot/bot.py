@@ -2,15 +2,17 @@
 import os
 import enum
 import random
-import discord
 import datetime
 import stundenplan as plan
+
+import discord
+from discord import app_commands
 
 intents = discord.Intents.default()
 intents.members = True
 
 client = discord.Client(intents=intents)
-tree = discord.app_commands.CommandTree(client)
+client.tree = app_commands.CommandTree(client)
 
 guild_id = 956666111989010533
 guild_object = discord.Object(id=guild_id)
@@ -32,8 +34,7 @@ def get_avatar_url(member: discord.Member):
 
 @client.event
 async def on_ready():
-    add_commands()
-    await tree.sync(guild=guild_object)
+    await client.tree.sync(guild=guild_object)
     print(f"Eingeloggt als {client.user}.")
 
 
@@ -51,23 +52,13 @@ async def on_member_join(member: discord.Member):
     print(f"Welcome-Message für {member.name} abgeschickt!")
 
 
-def add_commands():
-    for command in [
-        Abstimmung(),
-        ping,
-        farbe,
-        sarkasmus,
-        stundenplan,
-        info,
-        code,
-        projekte,
-        echo,
-        würfel,
-    ]:
-        tree.add_command(command, guild=guild_object)
+@client.event
+async def setup_hook():
+    client.tree.copy_global_to(guild=guild_object)
+    await client.tree.sync(guild=guild_object)
 
 
-@discord.app_commands.command(
+@client.tree.command(
     name="ping",
     description="Gibt die Latenz zwischen Discord und dem Bot an.",
 )
@@ -80,14 +71,14 @@ async def ping(interaction: discord.Interaction):
     )
 
 
-class Abstimmung(discord.app_commands.Group):
-    @discord.app_commands.command(
+class Abstimmung(app_commands.Group):
+    @client.tree.command(
         name="einfach",
         description="Erstellt eine einfache Abstimmung.",
     )
-    @discord.app_commands.describe(frage="frage")
-    @discord.app_commands.describe(antworta="antworta")
-    @discord.app_commands.describe(antwortb="antwortb")
+    @app_commands.describe(frage="frage")
+    @app_commands.describe(antworta="antworta")
+    @app_commands.describe(antwortb="antwortb")
     async def einfach(
         self, interaction: discord.Interaction, frage: str, antworta: str, antwortb: str
     ):
@@ -101,11 +92,11 @@ class Abstimmung(discord.app_commands.Group):
             f"Abstimmung '{frage}' (einfach) von {format_name(interaction.user)} erstellt."
         )
 
-    @discord.app_commands.command(
+    @client.tree.command(
         name="ja_nein",
         description="Erstellt eine Ja / Nein Abstimmung.",
     )
-    @discord.app_commands.describe(frage="frage")
+    @app_commands.describe(frage="frage")
     async def abstimmung(self, interaction: discord.Interaction, frage: str):
         await interaction.response.send_message(
             f"<@{interaction.user.id}> fragt: {frage}"
@@ -131,11 +122,11 @@ class Farbe(enum.Enum):
     keine = "0"
 
 
-@discord.app_commands.command(
+@client.tree.command(
     name="farbe",
     description="Ändert deine Farbrolle auf Discord.",
 )
-@discord.app_commands.describe(farbe="Deine gewünschte Farbe.")
+@app_commands.describe(farbe="Deine gewünschte Farbe.")
 async def farbe(interaction: discord.Interaction, farbe: Farbe):
     farbe_int = int(farbe.value)
     guild = discord.utils.get(client.guilds, name="Projektwoche: Discord Bots")
@@ -160,10 +151,10 @@ async def farbe(interaction: discord.Interaction, farbe: Farbe):
         print(f"{format_name(interaction.user)} hat nun keine Farbe.")
 
 
-@discord.app_commands.command(
+@client.tree.command(
     name="sarkasmus", description="Macht den angegebenen Text 'sArKasTiSCh'."
 )
-@discord.app_commands.describe(text="Der zu verändernde Text.")
+@app_commands.describe(text="Der zu verändernde Text.")
 async def sarkasmus(interaction: discord.Interaction, text: str):
     await interaction.response.send_message(
         "".join([random.choice([char.upper(), char.lower()]) for char in list(text)])
@@ -173,25 +164,20 @@ async def sarkasmus(interaction: discord.Interaction, text: str):
     )
 
 
-@discord.app_commands.command(
-    name="stundenplan", description="Zeigt Mats' Studenplan an."
-)
+@client.tree.command(name="stundenplan", description="Zeigt Mats' Studenplan an.")
 async def stundenplan(interaction: discord.Interaction):
     await interaction.response.send_message(plan.mats_stundenplan.show_week())
     print("Stundenplan angezeigt.")
 
 
-@discord.app_commands.command(name="münzwurf", description="Würft eine Münze.")
+@client.tree.command(name="münzwurf", description="Würft eine Münze.")
 async def münzwurf(interaction: discord.Interaction):
     result = random.choice(["Kopf!", "Zahl!"])
     await interaction.response.send_message(result)
     print(f"{format_name(interaction.user)} hat eine Münze geworfen, es war {result}.")
 
 
-@discord.app_commands.command(
-    name="info", description="Gibt dir verschiedene Informationen über einen Benutzer."
-)
-@discord.app_commands.describe(member="Nutzer")
+@client.tree.context_menu(name="info")
 async def info(interaction: discord.Interaction, member: discord.Member):
     embed = discord.Embed(
         title=member.name,
@@ -217,29 +203,25 @@ async def info(interaction: discord.Interaction, member: discord.Member):
     print(f"Info-Nachricht für {format_name(member)} abgeschickt.")
 
 
-@discord.app_commands.command(
-    name="code", description="Gibt dir einen Link zu meinem Code!"
-)
+@client.tree.command(name="code", description="Gibt dir einen Link zu meinem Code!")
 async def code(interaction: discord.Interaction):
     await interaction.response.send_message(
-        "https://github.com/MatsFangohr/discord-bots-course/tree/main/demonstration_bot"
+        "https://github.com/MatsFangohr/discord-bots-course/tree/main/beispielbot"
     )
 
 
-@discord.app_commands.command(
+@client.tree.command(
     name="projekte", description="Andere Projeckte, an denen ich gearbeitet habe."
 )
 async def projekte(interaction: discord.Interaction):
     await interaction.response.send_message(
-        "<https://github.com/MatsFangohr/discord-bots-course> - Ein Kurs, um in einer Woche das Programmieren von Discord-Bots zu lernen.\n<https://github.com/Anuken/Mindustry> - Ein 2d open-world tower defence Spiel."
+        "<https://github.com/MatsFangohr/discord-bots-course> - Ein Kurs, um in einer Woche das Programmieren von Discord-Bots zu lernen.\n<https://github.com/Anuken/Mindustry> - Ein 2d open-world tower defence Spiel.\nhttps://store.steampowered.com/app/1318690/shapez - Ein Automationsspiel auf Steam."
     )
 
 
-@discord.app_commands.command(
-    name="echo", description="Bringt den Bot dazu, etwas zu sagen."
-)
-@discord.app_commands.describe(channel="Welcher Kanal?")
-@discord.app_commands.describe(message="Welche Nachricht")
+@client.tree.command(name="echo", description="Bringt den Bot dazu, etwas zu sagen.")
+@app_commands.describe(channel="Welcher Kanal?")
+@app_commands.describe(message="Welche Nachricht")
 async def echo(
     interaction: discord.Interaction, channel: discord.TextChannel, message: str
 ):
@@ -247,15 +229,13 @@ async def echo(
     await interaction.response.send_message("Fertig!", ephemeral=True)
 
 
-@discord.app_commands.command(
-    name="würfel", description="Wirft eine Anzahl n-seitiger Würfel."
-)
-@discord.app_commands.describe(anzahl="Die Anzahl der Würfel.")
-@discord.app_commands.describe(seiten="Wie viele Seiten jeder Würfel hat.")
+@client.tree.command(name="würfel", description="Wirft eine Anzahl n-seitiger Würfel.")
+@app_commands.describe(anzahl="Die Anzahl der Würfel.")
+@app_commands.describe(seiten="Wie viele Seiten jeder Würfel hat.")
 async def würfel(
     interaction: discord.Interaction,
-    anzahl: discord.app_commands.Range[int, 1, 300],
-    seiten: discord.app_commands.Range[int, 1, 1000],
+    anzahl: app_commands.Range[int, 1, 300],
+    seiten: app_commands.Range[int, 1, 1000],
 ):
     results = [random.randint(1, seiten) for _ in range(anzahl)]
     await interaction.response.send_message(

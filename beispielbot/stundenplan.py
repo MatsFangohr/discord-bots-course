@@ -1,7 +1,7 @@
 import datetime
 import traceback
 
-# this is modified code from a private project
+# this is modified code from an older private project
 
 
 class Lesson:
