@@ -2,4 +2,5 @@ black[jupyter]
 notebook
 ipykernel
 pre-commit
+nest_asyncio
 git+https://github.com/Rapptz/discord.py
