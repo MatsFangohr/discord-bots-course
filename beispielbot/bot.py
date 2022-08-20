@@ -208,6 +208,13 @@ async def info(interaction: discord.Interaction, member: discord.Member):
     print(f"Info-Nachricht für {format_name(member)} abgeschickt.")
 
 
+@client.tree.context_menu(name="Absendezeit")
+async def absendezeit(interaction: discord.Interaction, message: discord.Message):
+    await interaction.response.send_message(
+        f"<t:{round(message.created_at.timestamp())}:F>, <t:{round(message.created_at.timestamp())}:R>"
+    )
+
+
 @client.tree.command(name="code", description="Gibt dir einen Link zu meinem Code!")
 async def code(interaction: discord.Interaction):
     await interaction.response.send_message(
