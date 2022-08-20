@@ -243,4 +243,10 @@ async def würfel(
     )
 
 
+@client.tree.command(name="hallo")
+async def hallo(interaction: discord.Interaction):
+    """Sagt Hallo!"""
+    await interaction.response.send_message(f"Hallo {interaction.user.nick}!")
+
+
 client.run(os.getenv("TOKEN"))
