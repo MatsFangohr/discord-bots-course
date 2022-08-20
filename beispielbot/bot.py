@@ -177,12 +177,11 @@ async def münzwurf(interaction: discord.Interaction):
     print(f"{format_name(interaction.user)} hat eine Münze geworfen, es war {result}.")
 
 
-@client.tree.context_menu(name="info")
-async def info(interaction: discord.Interaction, member: discord.Member):
+async def get_user_info_embed(member: discord.Member) -> discord.Embed:
     embed = discord.Embed(
         title=member.name,
         description=f"[Profilbild]({get_avatar_url(member)})",
-        color=discord.Color.random(),
+        color=member.roles[-1].color,
     )
     embed.set_author(name=member.guild.name, icon_url=member.guild.icon.url)
     embed.set_thumbnail(url=get_avatar_url(member))
@@ -199,6 +198,12 @@ async def info(interaction: discord.Interaction, member: discord.Member):
     embed.set_footer(text=member.id)
 
     embed.timestamp = embed.timestamp = datetime.datetime.utcnow()
+    return embed
+
+
+@client.tree.context_menu(name="Info")
+async def info(interaction: discord.Interaction, member: discord.Member):
+    embed = await get_user_info_embed(member)
     await interaction.response.send_message("", embed=embed)
     print(f"Info-Nachricht für {format_name(member)} abgeschickt.")
 
