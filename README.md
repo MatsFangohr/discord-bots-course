@@ -9,6 +9,7 @@
   - [Python-Einführung-Erweiterungen](./kurs/erweiterungen)
 - [Discord-Setup](./kurs/discord-setup.ipynb)
 - [discord.py Einführung](./kurs/discord-py-intro.ipynb)
+- [Hosting](./kurs/hosting.ipynb)
 
 ### English
 
