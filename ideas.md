@@ -1,4 +1,10 @@
 # ideas
 
 - more aufgaben
-- while loop
+- try / except
+- Ratelimits
+- Hosting (wahrscheinlich in einer anderen datei)
+  - keep-alive
+  - UptimeRobot
+- embeds?
+- voice
