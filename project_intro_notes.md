@@ -6,7 +6,7 @@
 - hab so was noch nie gemacht
 - auch nicht erwartet dass so viele das wählen
 - paar organisatorische Sachen
-- Zeiten: 8:30 - 13:30 flexibel, passt bei allen?
+- Zeiten: 9:00 - 14:00 flexibel, passt bei allen?
 - Pausen wann auch immer wir wollen, manchmal sag ich an, aber wenn ihr wollt sagt das
 - wenn ihr auf klo müsst sagt kurz was und geht einfach
 
