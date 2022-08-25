@@ -4,3 +4,4 @@
 - try / except?
 - embeds?
 - voice
+- dictionaries
