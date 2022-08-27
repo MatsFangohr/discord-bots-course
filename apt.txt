@@ -1,0 +1,4 @@
+libffi
+libnacl
+python3-dev
+ffmpeg
