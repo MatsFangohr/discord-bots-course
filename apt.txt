@@ -1,4 +1,4 @@
-libffi
-libnacl
+libffi-dev
+libnacl-dev
 python3-dev
 ffmpeg
