@@ -2,4 +2,3 @@
 
 - more aufgaben
 - try / except?
-- embeds?
