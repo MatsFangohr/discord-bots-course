@@ -1,4 +1,5 @@
 black[jupyter]
+jupyter
 notebook
 ipykernel
 nest_asyncio
