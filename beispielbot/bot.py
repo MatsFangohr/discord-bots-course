@@ -85,7 +85,7 @@ class Abstimmung(app_commands.Group):
         await interaction.response.send_message(
             f"<@{interaction.user.id}> fragt: {frage}\n\n:one:: {antworta}\n:two:: {antwortb}"
         )
-        message = await interaction.original_message()
+        message = await interaction.original_response()
         await message.add_reaction("1️⃣")
         await message.add_reaction("2️⃣")
         print(
@@ -101,7 +101,7 @@ class Abstimmung(app_commands.Group):
         await interaction.response.send_message(
             f"<@{interaction.user.id}> fragt: {frage}"
         )
-        message = await interaction.original_message()
+        message = await interaction.original_response()
         await message.add_reaction("✅")
         await message.add_reaction("❌")
         print(
@@ -126,6 +126,7 @@ class Farbe(enum.Enum):
     name="farbe",
     description="Ändert deine Farbrolle auf Discord.",
 )
+@app_commands.checks.has_permissions(manage_messages=True)
 @app_commands.describe(farbe="Deine gewünschte Farbe.")
 async def farbe(interaction: discord.Interaction, farbe: Farbe):
     farbe_int = int(farbe.value)
@@ -149,6 +150,14 @@ async def farbe(interaction: discord.Interaction, farbe: Farbe):
     else:
         await interaction.response.send_message("Farbe erfolgreich entfernt.")
         print(f"{format_name(interaction.user)} hat nun keine Farbe.")
+
+
+@farbe.error
+async def farbe_error(interaction: discord.Interaction, error: discord):
+    if isinstance(error, app_commands.MissingPermissions):
+        await interaction.response.send_message(
+            "Dazu fehlen dir die Rechte!", ephemeral=True
+        )
 
 
 @client.tree.command(
@@ -177,7 +186,8 @@ async def münzwurf(interaction: discord.Interaction):
     print(f"{format_name(interaction.user)} hat eine Münze geworfen, es war {result}.")
 
 
-async def get_user_info_embed(member: discord.Member) -> discord.Embed:
+@client.tree.context_menu(name="Info")
+async def info(interaction: discord.Interaction, member: discord.Member):
     embed = discord.Embed(
         title=member.name,
         description=f"[Profilbild]({get_avatar_url(member)})",
@@ -198,12 +208,6 @@ async def get_user_info_embed(member: discord.Member) -> discord.Embed:
     embed.set_footer(text=member.id)
 
     embed.timestamp = embed.timestamp = datetime.datetime.utcnow()
-    return embed
-
-
-@client.tree.context_menu(name="Info")
-async def info(interaction: discord.Interaction, member: discord.Member):
-    embed = await get_user_info_embed(member)
     await interaction.response.send_message("", embed=embed)
     print(f"Info-Nachricht für {format_name(member)} abgeschickt.")
 
@@ -261,4 +265,5 @@ async def hallo(interaction: discord.Interaction):
     await interaction.response.send_message(f"Hallo {interaction.user.nick}!")
 
 
+client.tree.add_command(Abstimmung())
 client.run(os.getenv("TOKEN"))
